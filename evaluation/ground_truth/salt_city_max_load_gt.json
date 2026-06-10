@@ -1,0 +1,174 @@
+{
+  "sample_name": "salt_city_max_load",
+  "description": "約一萬字以上的中文章節級敘事測試文本，用於測試目前 MVP 在較大文本量下的分塊、抽取、衝突偵測、去重與 evaluation 指標。",
+  "expected_conflicts": [
+    {
+      "id": "gt_001",
+      "conflict_type": "character_state_conflict",
+      "title": "白棠死亡與封存後仍出現並說話",
+      "related_entities": [
+        "白棠",
+        "銀灰棺",
+        "冷室"
+      ],
+      "must_include_keywords": [
+        "白棠",
+        "死亡",
+        "封存",
+        "說話",
+        "冷室"
+      ]
+    },
+    {
+      "id": "gt_002",
+      "conflict_type": "world_rule_violation",
+      "title": "死者不得被喚回，但白棠被霧鐘喚回並行動",
+      "related_entities": [
+        "白棠",
+        "霧鐘",
+        "銀灰棺"
+      ],
+      "must_include_keywords": [
+        "死者",
+        "不能",
+        "喚回",
+        "白棠",
+        "霧鐘"
+      ]
+    },
+    {
+      "id": "gt_003",
+      "conflict_type": "unique_item_conflict",
+      "title": "藍銅令被設定為唯一，後文卻出現備用品與多枚副本",
+      "related_entities": [
+        "藍銅令",
+        "陸苒",
+        "阮柏"
+      ],
+      "must_include_keywords": [
+        "藍銅令",
+        "唯一",
+        "備用",
+        "第二枚",
+        "三枚"
+      ]
+    },
+    {
+      "id": "gt_004",
+      "conflict_type": "item_location_conflict",
+      "title": "藍銅令持有人紀錄互相矛盾",
+      "related_entities": [
+        "藍銅令",
+        "沈璃",
+        "白棠",
+        "賀簡"
+      ],
+      "must_include_keywords": [
+        "藍銅令",
+        "沈璃",
+        "白棠",
+        "賀簡",
+        "保管"
+      ]
+    },
+    {
+      "id": "gt_005",
+      "conflict_type": "world_rule_violation",
+      "title": "夜半敲霧鐘應引來白霧，實際卻讓白霧退去",
+      "related_entities": [
+        "霧鐘",
+        "白霧",
+        "周衡",
+        "阮柏"
+      ],
+      "must_include_keywords": [
+        "夜半",
+        "敲鐘",
+        "霧鐘",
+        "白霧",
+        "退回"
+      ]
+    },
+    {
+      "id": "gt_006",
+      "conflict_type": "character_consistency_drift",
+      "title": "周衡前期害怕且不擅長戰鬥，後期卻熟練擊倒敵人",
+      "related_entities": [
+        "周衡",
+        "白棠"
+      ],
+      "must_include_keywords": [
+        "周衡",
+        "不擅長戰鬥",
+        "害怕",
+        "徒手擊倒",
+        "熟練"
+      ]
+    },
+    {
+      "id": "gt_007",
+      "conflict_type": "world_setting_conflict",
+      "title": "北塔霧鐘被設定為真正維持邊界，後文揭露只是影鐘／複製品",
+      "related_entities": [
+        "北塔霧鐘",
+        "影鐘",
+        "鹽墓正鐘"
+      ],
+      "must_include_keywords": [
+        "北塔",
+        "霧鐘",
+        "影鐘",
+        "鹽墓",
+        "真正"
+      ]
+    },
+    {
+      "id": "gt_008",
+      "conflict_type": "world_setting_conflict",
+      "title": "黑石牆規則與後期密令揭露的真相不一致",
+      "related_entities": [
+        "黑石牆",
+        "阮柏",
+        "密令"
+      ],
+      "must_include_keywords": [
+        "黑石牆",
+        "密令",
+        "影鐘",
+        "藍銅令複製"
+      ]
+    },
+    {
+      "id": "gt_009",
+      "conflict_type": "world_rule_violation",
+      "title": "白棠日誌要求不要讓霧鐘在夜裡替她說話，但後文夜裡確實出現白棠聲音",
+      "related_entities": [
+        "白棠",
+        "霧鐘",
+        "周衡"
+      ],
+      "must_include_keywords": [
+        "白棠",
+        "霧鐘",
+        "夜裡",
+        "說話",
+        "聲音"
+      ]
+    },
+    {
+      "id": "gt_010",
+      "conflict_type": "character_consistency_drift",
+      "title": "周衡在鹽墓再次展現連續戰鬥能力，與前期害怕戰鬥設定形成延續性漂移",
+      "related_entities": [
+        "周衡"
+      ],
+      "must_include_keywords": [
+        "周衡",
+        "害怕",
+        "熟練",
+        "守衛",
+        "戰鬥"
+      ]
+    }
+  ]
+}

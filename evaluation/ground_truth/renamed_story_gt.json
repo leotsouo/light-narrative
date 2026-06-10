@@ -1,0 +1,41 @@
+{
+  "sample_name": "renamed_story",
+  "description": "換名測試文本，用來測試泛化能力，避免只針對霧城之鐘硬寫。",
+  "expected_conflicts": [
+    {
+      "id": "gt_r001",
+      "conflict_type": "character_state_conflict",
+      "title": "角色死亡後仍活動",
+      "related_entities": ["韓逐"],
+      "must_include_keywords": ["韓逐", "死亡", "說", "身後"]
+    },
+    {
+      "id": "gt_r002",
+      "conflict_type": "unique_item_conflict",
+      "title": "唯一物品出現備用品",
+      "related_entities": ["青銅印"],
+      "must_include_keywords": ["青銅", "唯一", "拍賣", "印"]
+    },
+    {
+      "id": "gt_r003",
+      "conflict_type": "world_rule_violation",
+      "title": "夜晚敲鐘規則被違反",
+      "related_entities": ["葉聽", "海錨鐘"],
+      "must_include_keywords": ["夜晚", "敲鐘", "夜半", "海霧"]
+    },
+    {
+      "id": "gt_r004",
+      "conflict_type": "world_setting_conflict",
+      "title": "海錨鐘設定反轉",
+      "related_entities": ["海錨鐘", "霜港"],
+      "must_include_keywords": ["海錨鐘", "霜港", "複製品", "燈塔"]
+    },
+    {
+      "id": "gt_r005",
+      "conflict_type": "world_rule_violation",
+      "title": "亡者不能復活卻復活",
+      "related_entities": ["顧沉", "亡者"],
+      "must_include_keywords": ["亡者", "復活", "顧沉", "火焰"]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ from src.narrative_patterns import (
     is_valid_person_name,
     is_valid_post_death_active_evidence,
     is_valid_source_evidence,
+    item_name_matches,
     split_sentences,
 )
 from src.schemas import CharacterState, Chunk, Event, ItemState, WorldRule
@@ -207,6 +208,133 @@ def derive_item_states(
                             evidence=sent,
                         )
                     )
+                m_hang = re.search(
+                    rf"^([\u4e00-\u9fff]{{2,3}})把{re.escape(item)}掛在",
+                    sent.strip(),
+                )
+                if m_hang and is_valid_person_name(m_hang.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_hang.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_hand = re.search(
+                    rf"^([\u4e00-\u9fff]{{2,3}})手中握[著着]{re.escape(item)}",
+                    sent.strip(),
+                )
+                if m_hand and is_valid_person_name(m_hand.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_hand.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_custody = re.search(
+                    rf"(?:{re.escape(item)}(?:目前)?由|由)([\u4e00-\u9fff]{{2,3}})保管",
+                    sent,
+                )
+                if m_custody and is_valid_person_name(m_custody.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_custody.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_always = re.search(rf"一直由([\u4e00-\u9fff]{{2,3}})保管", sent)
+                if m_always and item in sent and is_valid_person_name(m_always.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_always.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_hold = re.search(
+                    rf"^([\u4e00-\u9fff]{{2,3}})(?:拿著|握著|握著自己的|懷裡的){re.escape(item)}",
+                    sent.strip(),
+                )
+                if not m_hold:
+                    m_hold = re.search(
+                        rf"^([\u4e00-\u9fff]{{2,3}})握著(?:自己的)?{re.escape(item)}",
+                        sent.strip(),
+                    )
+                if m_hold and is_valid_person_name(m_hold.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_hold.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_on_body = re.search(
+                    rf"{re.escape(item)}(?:明明)?在([\u4e00-\u9fff]{{2,3}})(?:懷裡|身上|腰間|內袋|手中)",
+                    sent,
+                )
+                if m_on_body and is_valid_person_name(m_on_body.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_on_body.group(1),
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                m_never = re.search(
+                    rf"{re.escape(item)}從未(?:交給|落到)([\u4e00-\u9fff]{{2,3}})",
+                    sent,
+                )
+                if m_never and is_valid_person_name(m_never.group(1)):
+                    states.append(
+                        ItemState(
+                            item=item,
+                            holder=m_never.group(1),
+                            property="denied_holder",
+                            chapter=chunk.chapter_title or None,
+                            chunk_id=chunk.id,
+                            evidence=sent,
+                        )
+                    )
+                if item in sent and re.search(r"從未交給([\u4e00-\u9fff]{2,3})", sent):
+                    m_denied = re.search(r"從未交給([\u4e00-\u9fff]{2,3})", sent)
+                    if m_denied and is_valid_person_name(m_denied.group(1)):
+                        states.append(
+                            ItemState(
+                                item=item,
+                                holder=m_denied.group(1),
+                                property="denied_holder",
+                                chapter=chunk.chapter_title or None,
+                                chunk_id=chunk.id,
+                                evidence=sent,
+                            )
+                        )
+                if item in sent and re.search(r"從未落到([\u4e00-\u9fff]{2,3})手上", sent):
+                    m_denied2 = re.search(r"從未落到([\u4e00-\u9fff]{2,3})手上", sent)
+                    if m_denied2 and is_valid_person_name(m_denied2.group(1)):
+                        states.append(
+                            ItemState(
+                                item=item,
+                                holder=m_denied2.group(1),
+                                property="denied_holder",
+                                chapter=chunk.chapter_title or None,
+                                chunk_id=chunk.id,
+                                evidence=sent,
+                            )
+                        )
                 holder = _resolve_item_holder(sent, item, prev_sents)
                 if holder:
                     states.append(
@@ -246,7 +374,7 @@ def derive_item_states(
                             evidence=sent,
                         )
                     )
-                if any(k in sent for k in ("拍賣會", "備用", "另一把", "第二把")) and item in sent:
+                if any(k in sent for k in ("拍賣會", "備用", "另一把", "第二把", "另一枚", "第二枚", "三枚", "副本", "複製")) and item in sent:
                     states.append(
                         ItemState(
                             item=item,
@@ -258,9 +386,9 @@ def derive_item_states(
                     )
 
     for ev in events:
-        if any(k in ev.evidence for k in ("備用", "另一把", "拍賣會")):
+        if any(k in ev.evidence for k in ("備用", "另一把", "另一枚", "第二枚", "三枚", "副本", "拍賣會")):
             for item in item_set:
-                if item in ev.evidence or ("鑰匙" in item and "鑰匙" in ev.evidence):
+                if item in ev.evidence or item_name_matches(item, ev.evidence):
                     states.append(
                         ItemState(
                             item=item,

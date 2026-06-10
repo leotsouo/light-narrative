@@ -1,0 +1,5 @@
+{
+  "sample_name": "clean_story",
+  "description": "無明顯矛盾文本，用來測試 false positive。",
+  "expected_conflicts": []
+}

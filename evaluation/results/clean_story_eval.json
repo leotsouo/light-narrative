@@ -1,0 +1,22 @@
+{
+  "sample_name": "clean_story",
+  "report_path": "data\\exports\\report_sample_clean_story.json",
+  "ground_truth_path": "evaluation\\ground_truth\\clean_story_gt.json",
+  "total_expected": 0,
+  "total_predicted": 0,
+  "tp": 0,
+  "fp": 0,
+  "fn": 0,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "duplicate_count": 0,
+  "duplicate_rate": 0.0,
+  "evidence_accuracy": 0.0,
+  "matched_conflicts": [],
+  "missed_conflicts": [],
+  "false_positives": [],
+  "notes": [
+    "This is a simplified evaluation for final project reporting, not a formal benchmark."
+  ]
+}

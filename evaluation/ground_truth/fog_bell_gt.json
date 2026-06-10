@@ -1,0 +1,48 @@
+{
+  "sample_name": "fog_bell",
+  "description": "霧城之鐘測試文本，用於測試多種敘事矛盾。",
+  "expected_conflicts": [
+    {
+      "id": "gt_001",
+      "conflict_type": "character_state_conflict",
+      "title": "角色死亡後仍活動",
+      "related_entities": ["羅恩"],
+      "must_include_keywords": ["羅恩", "死亡", "說", "出現", "活動"]
+    },
+    {
+      "id": "gt_002",
+      "conflict_type": "world_rule_violation",
+      "title": "亡者不能復活卻復活",
+      "related_entities": ["羅恩", "亡者"],
+      "must_include_keywords": ["亡者", "不能", "復活", "羅恩"]
+    },
+    {
+      "id": "gt_003",
+      "conflict_type": "unique_item_conflict",
+      "title": "銀鑰匙唯一性衝突",
+      "related_entities": ["銀鑰匙"],
+      "must_include_keywords": ["銀鑰匙", "唯一", "備用"]
+    },
+    {
+      "id": "gt_004",
+      "conflict_type": "world_rule_violation",
+      "title": "夜晚敲鐘規則違反",
+      "related_entities": ["艾琳", "晨鐘"],
+      "must_include_keywords": ["夜晚", "敲鐘", "黑霧", "夜半"]
+    },
+    {
+      "id": "gt_005",
+      "conflict_type": "character_consistency_drift",
+      "title": "艾琳角色一致性漂移",
+      "related_entities": ["艾琳"],
+      "must_include_keywords": ["艾琳", "不擅長", "戰鬥", "徒手擊倒"]
+    },
+    {
+      "id": "gt_006",
+      "conflict_type": "world_setting_conflict",
+      "title": "晨鐘重大設定反轉",
+      "related_entities": ["晨鐘", "霧城"],
+      "must_include_keywords": ["晨鐘", "霧城", "複製品", "城外"]
+    }
+  ]
+}

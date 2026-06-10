@@ -1,0 +1,93 @@
+{
+  "sample_name": "salt_city_max_load",
+  "report_path": "data\\exports\\report_e4ff4eb4.json",
+  "ground_truth_path": "evaluation\\ground_truth\\salt_city_max_load_gt.json",
+  "total_expected": 10,
+  "total_predicted": 10,
+  "tp": 10,
+  "fp": 0,
+  "fn": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "duplicate_count": 0,
+  "duplicate_rate": 0.0,
+  "evidence_accuracy": 1.0,
+  "matched_conflicts": [
+    {
+      "ground_truth_id": "gt_004",
+      "system_conflict_id": "fc73329c-f5a7-4998-a34a-24b8f5b55553",
+      "conflict_type": "item_location_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 5 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_005",
+      "system_conflict_id": "93e33792-32d7-496b-8882-75ba97aa7121",
+      "conflict_type": "world_rule_violation",
+      "match_reason": "conflict_type matched and entity overlap and 5 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_007",
+      "system_conflict_id": "ca359884-07a8-4611-81dc-a4a56a9668b4",
+      "conflict_type": "world_setting_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 5 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_001",
+      "system_conflict_id": "c35f60d7-0f7e-4c80-bae6-7ad2e00623e4",
+      "conflict_type": "character_state_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_010",
+      "system_conflict_id": "b029bdff-4136-46f2-b8af-30c30ee1fb28",
+      "conflict_type": "character_consistency_drift",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_009",
+      "system_conflict_id": "83d549ca-2036-409a-844c-e2228beb47f9",
+      "conflict_type": "world_rule_violation",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_002",
+      "system_conflict_id": "8d0003b1-ad7f-4dbc-8ddc-f8bd94a61425",
+      "conflict_type": "world_rule_violation",
+      "match_reason": "conflict_type matched and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_008",
+      "system_conflict_id": "a42f3033-1122-4d3c-9bc7-6c5bf4095194",
+      "conflict_type": "world_setting_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 3 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_003",
+      "system_conflict_id": "e6765673-7aad-4d79-b7d2-406831246610",
+      "conflict_type": "unique_item_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 3 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_006",
+      "system_conflict_id": "0854f305-1430-46a0-bd5b-2e80cd9dd68c",
+      "conflict_type": "character_consistency_drift",
+      "match_reason": "conflict_type matched and entity overlap and 2 keyword(s) matched",
+      "evidence_ok": true
+    }
+  ],
+  "missed_conflicts": [],
+  "false_positives": [],
+  "notes": [
+    "This is a simplified evaluation for final project reporting, not a formal benchmark."
+  ]
+}

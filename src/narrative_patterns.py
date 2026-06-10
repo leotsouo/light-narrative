@@ -45,7 +45,103 @@ NON_PERSON_WORDS: frozenset[str] = frozenset(
         "傳聞",
         "鎮上",
         "當夜",
+        "這件",
+        "這段",
+        "這次",
+        "這些",
+        "那些",
+        "她把",
+        "他說",
+        "她說",
+        "他們",
+        "自己",
+        "後來",
+        "前面",
+        "這一章",
+        "守衛",
+        "這一",
+        "那一",
     }
+)
+
+INVALID_CHARACTER_SUFFIXES: frozenset[str] = frozenset({"把", "說", "段", "件", "們", "時", "後"})
+INVALID_CHARACTER_PREFIXES: frozenset[str] = frozenset({"這", "那", "他", "她", "它"})
+
+UNIQUE_ITEM_RULE_MARKERS = (
+    "唯一",
+    "只有一枚",
+    "只有一個",
+    "沒有備用",
+    "沒有副本",
+    "沒有第二枚",
+    "不得複製",
+    "任何人不得複製",
+)
+UNIQUE_ITEM_VIOLATION_MARKERS = (
+    "備用",
+    "備用品",
+    "另一枚",
+    "第二枚",
+    "三枚",
+    "多枚",
+    "副本",
+    "複製品",
+    "秘密複製",
+    "複製計畫",
+    "又出現",
+    "外形相同",
+    "同樣的",
+)
+META_SENTENCE_MARKERS = (
+    "若它抓到",
+    "檢查表",
+    "答案比對",
+    "應能在",
+    "代表核心規則",
+    "改名為",
+    "學期展示",
+    "期末摘要",
+    "高風險詞",
+    "不一定構成",
+    "這些段落",
+)
+SETTING_EARLY_KEYWORDS = (
+    "維持",
+    "维持",
+    "位於",
+    "位于",
+    "中央",
+    "每天",
+    "界線",
+    "界线",
+    "規則",
+    "设定",
+    "設定",
+    "所有人都知道",
+    "舊檔案",
+    "公開",
+    "黑石牆",
+    "市政廳",
+)
+SETTING_REVERSAL_KEYWORDS = (
+    "真正的",
+    "移到",
+    "複製品",
+    "复制品",
+    "不在",
+    "早已",
+    "其實",
+    "其实",
+    "實際上",
+    "并非",
+    "並非",
+    "密令",
+    "秘密",
+    "不得公開",
+    "複製計畫",
+    "只是",
+    "不得被稱為",
+    "真相",
 )
 
 # holder/location 無效片段
@@ -64,7 +160,37 @@ INVALID_HOLDER_LOCATION: frozenset[str] = frozenset(
     }
 )
 
-NAME_RE = r"[\u4e00-\u9fff]{2,3}"
+INVALID_OBJECT_PREFIXES: frozenset[str] = frozenset(
+    {
+        "下",
+        "色",
+        "響",
+        "塔",
+        "錨",
+        "枚",
+        "全",
+        "的",
+        "門",
+        "城",
+        "晚",
+        "半",
+        "一",
+        "能",
+        "打",
+        "開",
+        "此",
+        "這",
+        "該",
+        "內",
+        "外",
+        "著",
+        "後",
+        "稱",
+        "密",
+        "正正",
+    }
+)
+INVALID_OBJECT_NAMES: frozenset[str] = frozenset({"密令", "政令", "口令", "檢員"})
 PERSON_NAME = r"[\u4e00-\u9fff]{2}"  # 主體角色名（2 字）用於狀態/行動句，避免「羅恩從她」誤抽
 
 LIMITATION_KEYWORDS = ("害怕", "不擅", "膽小", "畏縮", "容易退縮", "不敢", "不擅長", "不會", "無法", "不能")
@@ -79,7 +205,7 @@ HIGH_ABILITY_KEYWORDS = COMBAT_KEYWORDS + (
     "無畏",
 )
 
-ITEM_NOUN_RE = r"[\u4e00-\u9fff]{1,8}(?:鑰匙|劍|刀|符|印|寶石|玉佩|信物|鐘)"
+ITEM_NOUN_RE = r"[\u4e00-\u9fff]{1,8}(?:鑰匙|劍|刀|符|印|寶石|玉佩|信物|鐘|令)"
 DEMONSTRATIVE_ITEMS: frozenset[str] = frozenset({"這", "此", "該", "這個", "這把", "這件", "這項"})
 
 # 死亡後仍活動：須為明確行動句，排除倒地/遺體等
@@ -92,9 +218,6 @@ POST_DEATH_ACTIVE_RE = re.compile(
     rf"說|告訴|回答|走|站|衝|攻擊|使用|要求|出現|扶著|進入|命令|"
     rf"身後說|說道|笑道|問道|喊道|走出|現身|從[^。]{{0,12}}走出|拉下|敲響|敲鐘|擊倒|打開)"
 )
-
-SETTING_EARLY_KEYWORDS = ("維持", "维持", "位於", "位于", "中央", "每天", "界線", "界线", "規則", "设定", "設定")
-SETTING_REVERSAL_KEYWORDS = ("真正的", "移到", "複製品", "复制品", "不在", "早已", "其實", "其实", "實際上", "并非", "並非")
 
 UNIQUE_ITEM_RE = re.compile(
     rf"({ITEM_NOUN_RE})是[^。]{{0,30}}唯一|唯一[^。]{{0,30}}的({ITEM_NOUN_RE})",
@@ -152,10 +275,99 @@ EVENT_ACTION_KEYWORDS = (
 )
 
 
+def is_meta_sentence(text: str) -> bool:
+    return any(marker in text for marker in META_SENTENCE_MARKERS)
+
+
+def is_unique_item_rule(text: str) -> bool:
+    return any(marker in text for marker in UNIQUE_ITEM_RULE_MARKERS)
+
+
+def is_unique_item_violation(text: str) -> bool:
+    negations = ("從未", "沒有", "不曾", "未出現", "未會", "並無", "不得有", "無備用", "無副本")
+    for marker in UNIQUE_ITEM_VIOLATION_MARKERS:
+        idx = text.find(marker)
+        if idx == -1:
+            continue
+        prefix = text[max(0, idx - 10):idx]
+        if any(neg in prefix for neg in negations):
+            continue
+        if re.search(rf"(?:從未|沒有|無|未|不得).{{0,8}}{re.escape(marker)}", text):
+            continue
+        return True
+    return False
+
+
+def item_name_matches(item: str, text: str) -> bool:
+    if not item or not text:
+        return False
+    if item in text:
+        return True
+    for suf in ("鑰匙", "令", "印", "印信"):
+        if not item.endswith(suf):
+            continue
+        prefix = item[: -len(suf)]
+        if suf not in text:
+            continue
+        if prefix and prefix in text:
+            return True
+        if any(
+            m in text
+            for m in ("備用", "另一把", "另一枚", "第二把", "第二枚", "三枚", "副本", "複製", "同樣的", "又出現")
+        ):
+            return True
+    return False
+
+
+def extract_setting_topics(text: str) -> set[str]:
+    topics: set[str] = set()
+    for kw in ("黑石牆", "市政廳", "影鐘", "正鐘", "鹽墓", "北塔", "北塔霧鐘"):
+        if kw in text:
+            topics.add(kw)
+    if "霧鐘" in text:
+        topics.add("霧鐘")
+    m = re.search(r"[「『]([^」』]{2,10})[」』]", text)
+    if m:
+        ent = m.group(1).strip()
+        if len(ent) >= 2 and not ent.startswith(("若", "第", "這")):
+            topics.add(ent)
+    for name in extract_object_names_from_text(text):
+        topics.add(name)
+    return topics
+
+
+def is_setting_reversal_sentence(text: str) -> bool:
+    strong_markers = (
+        "複製品",
+        "影鐘",
+        "密令",
+        "真正的",
+        "真相",
+        "其實",
+        "只是複製",
+        "被移到",
+        "並非",
+        "不是真正",
+        "不得被稱為",
+        "複製計畫",
+    )
+    if not any(k in text for k in strong_markers):
+        return False
+    if any(neg in text for neg in ("未揭示", "沒有反轉", "並無反轉", "未出現反轉")):
+        return False
+    if re.search(r"(?:未|沒有|無|不曾).{0,8}(?:複製|副本|影鐘|真相)", text):
+        return False
+    return True
+
+
 def is_valid_person_name(name: str) -> bool:
     if not name or len(name) not in (2, 3):
         return False
     if name in NON_PERSON_WORDS:
+        return False
+    if name[0] in INVALID_CHARACTER_PREFIXES:
+        return False
+    if name[-1] in INVALID_CHARACTER_SUFFIXES:
         return False
     if name.endswith(("地", "的", "了", "著", "過")):
         return False
@@ -164,7 +376,7 @@ def is_valid_person_name(name: str) -> bool:
     # 排除動詞/狀態詞被誤抽為人名
     if any(
         p in name
-        for p in ("停止", "呼吸", "確認", "身後", "已經", "死亡", "復活", "安葬", "敲鐘")
+        for p in ("停止", "呼吸", "確認", "身後", "已經", "死亡", "復活", "安葬", "敲鐘", "聰明", "謹慎", "善良", "勇敢")
     ):
         return False
     return True
@@ -190,6 +402,8 @@ def split_sentences(text: str) -> list[str]:
 def is_likely_world_rule(sentence: str) -> bool:
     s = sentence.strip()
     if len(s) < 6:
+        return False
+    if is_meta_sentence(s):
         return False
     # 含明確動作動詞的句子優先視為 Event
     if any(k in s for k in ("拉下", "敲響", "響起", "走出", "走進", "停止呼吸", "交給", "交還", "擊倒")):
@@ -254,8 +468,13 @@ def normalize_unique_item_name(raw: str) -> str:
 
 
 def extract_unique_item_from_rule(rule_text: str) -> str | None:
-    if "唯一" not in rule_text:
+    if not is_unique_item_rule(rule_text):
         return None
+    m_quote = re.search(r"[「『]([^」』]{2,8})[」』]", rule_text)
+    if m_quote:
+        name = normalize_unique_item_name(m_quote.group(1))
+        if name:
+            return name
     tails = re.findall(rf"的({ITEM_NOUN_RE})(?:[。，,]|$)", rule_text)
     for candidate in reversed(tails):
         name = normalize_unique_item_name(candidate)
@@ -333,6 +552,114 @@ def is_valid_source_evidence(text: str) -> bool:
     if "相關描述" in text:
         return False
     return True
+
+
+def is_valid_object_name(name: str) -> bool:
+    """過濾誤抽的整句片段或指示代詞物品名。"""
+    text = normalize_text(name).strip()
+    if not text or len(text) < 2 or len(text) > 6:
+        return False
+    if text in DEMONSTRATIVE_ITEMS:
+        return False
+    if text in INVALID_OBJECT_NAMES:
+        return False
+    if text.startswith(("此", "這", "該", "真正", "城內", "讓", "一能", "稱")):
+        return False
+    if any(
+        bad in text
+        for bad in (
+            "發現",
+            "同時",
+            "一把",
+            "這是",
+            "出現",
+            "被說",
+            "聲稱",
+            "不得",
+            "談論",
+            "唯一",
+            "能打",
+            "地下",
+            "打開",
+            "交給",
+            "掛在",
+            "把",
+            "握",
+            "拉下",
+            "讓",
+            "敲",
+            "真正",
+            "城中",
+            "手中",
+            "室",
+            "的",
+            "大門",
+            "枚",
+        )
+    ):
+        return False
+    if re.match(r"^[\u4e00-\u9fff]{1,4}(?:鑰匙|劍|刀|書|信|藥|符|玉佩|印|寶石|玉|令)$", text):
+        prefix = re.sub(r"(?:鑰匙|劍|刀|書|信|藥|符|玉佩|印|寶石|玉)$", "", text)
+        if prefix in INVALID_OBJECT_PREFIXES or any(x in prefix for x in ("色", "著", "後")):
+            return False
+        return True
+    if re.match(r"^[\u4e00-\u9fff]{1,2}鐘$", text):
+        prefix = text[:-1]
+        if prefix in INVALID_OBJECT_PREFIXES or any(x in prefix for x in ("色", "著", "後", "下", "響")):
+            return False
+        return True
+    return False
+
+
+def is_valid_setting_topic(topic: str) -> bool:
+    if not topic or len(topic) < 2 or len(topic) > 8:
+        return False
+    if topic in NON_PERSON_WORDS or topic in INVALID_HOLDER_LOCATION:
+        return False
+    if topic.startswith(("是", "被", "在", "能", "令", "不", "的", "有", "沒")):
+        return False
+    if any(k in topic for k in ("鐘", "令", "牆", "墓", "塔", "鹽", "霧", "市政", "黑石", "影")):
+        return True
+    if is_valid_object_name(topic):
+        return True
+    return len(topic) >= 3
+
+
+def extract_object_names_from_text(text: str) -> list[str]:
+    """從文本中抽取合法物品名，避免整句誤抽。"""
+    found: set[str] = set()
+    suffixes = ("鑰匙", "劍", "刀", "書", "信", "藥", "符", "玉佩", "印", "寶石", "玉", "鐘", "令")
+    for suffix in suffixes:
+        max_prefix = 2 if suffix == "鐘" else 4
+        for m in re.finditer(re.escape(suffix), text):
+            idx = m.start()
+            for plen in range(1, max_prefix + 1):
+                if idx - plen < 0:
+                    continue
+                prefix = text[idx - plen : idx]
+                if not re.fullmatch(r"[\u4e00-\u9fff]+", prefix):
+                    continue
+                name = prefix + suffix
+                if is_valid_object_name(name):
+                    found.add(name)
+    keep: list[str] = []
+    for name in sorted(found, key=len, reverse=True):
+        if any(name != other and name in other for other in keep):
+            continue
+        keep.append(name)
+    return keep
+
+
+def is_valid_resolved_holder(holder: str | None) -> bool:
+    """物品持有人須為具體人名，不接受代名詞或未解析的「自己」。"""
+    if not holder:
+        return False
+    h = holder.strip()
+    if h in INVALID_HOLDER_LOCATION or h in DEMONSTRATIVE_ITEMS:
+        return False
+    if h in ("自己", "她", "他", "它", "這", "此", "該"):
+        return False
+    return is_valid_person_name(h)
 
 
 def is_valid_holder_or_location(value: str | None) -> bool:

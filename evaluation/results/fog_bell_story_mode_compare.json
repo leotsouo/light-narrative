@@ -1,0 +1,104 @@
+{
+  "generated_at": "2026-06-10T00:17:06.671697+00:00",
+  "project_id": "fog_bell_story",
+  "chunk_count": 5,
+  "model": "llama3.2",
+  "ollama_available": false,
+  "ollama_used": false,
+  "architecture": {
+    "ai_used_for": [
+      "entity_extraction",
+      "event_extraction",
+      "world_rule_extraction"
+    ],
+    "rule_based_core": [
+      "conflict_detection",
+      "evidence_matching",
+      "json_report_generation"
+    ],
+    "optional_report_summary": "not_enabled_in_mvp"
+  },
+  "heuristic": {
+    "mode": "heuristic",
+    "entity_counts": {
+      "characters": 5,
+      "locations": 1,
+      "objects": 2,
+      "events": 6,
+      "world_rules": 5
+    },
+    "conflict_total": 6,
+    "conflict_counts": {
+      "world_rule_violation": 2,
+      "character_state_conflict": 1,
+      "unique_item_conflict": 1,
+      "item_location_conflict": 0,
+      "character_consistency_drift": 1,
+      "world_setting_conflict": 1
+    },
+    "conflicts_preview": [
+      {
+        "conflict_type": "character_state_conflict",
+        "severity": "high",
+        "title": "角色「羅恩」死亡/安葬後仍活動",
+        "related_entities": [
+          "羅恩"
+        ]
+      },
+      {
+        "conflict_type": "world_rule_violation",
+        "severity": "high",
+        "title": "復活或喚回違反「死者不得重返」世界規則",
+        "related_entities": [
+          "角色",
+          "亡者"
+        ]
+      },
+      {
+        "conflict_type": "unique_item_conflict",
+        "severity": "high",
+        "title": "唯一物品「銀鑰匙」出現矛盾",
+        "related_entities": [
+          "銀鑰匙"
+        ]
+      },
+      {
+        "conflict_type": "world_rule_violation",
+        "severity": "high",
+        "title": "夜晚敲鐘規則被違反",
+        "related_entities": [
+          "艾琳",
+          "敲鐘",
+          "夜晚"
+        ]
+      },
+      {
+        "conflict_type": "character_consistency_drift",
+        "severity": "medium",
+        "title": "角色「羅恩」能力或性格表現出現漂移",
+        "related_entities": [
+          "羅恩"
+        ]
+      },
+      {
+        "conflict_type": "world_setting_conflict",
+        "severity": "medium",
+        "title": "「晨鐘」相關世界設定出現重大反轉",
+        "related_entities": [
+          "晨鐘"
+        ]
+      }
+    ]
+  },
+  "ollama": null,
+  "comparison": {
+    "entity_deltas": null,
+    "conflict_overlap": null,
+    "interpretation": "Ollama 未連線，僅完成 heuristic 抽取；衝突檢核仍由 deterministic rules 執行。"
+  },
+  "notes": [
+    "Extraction may differ between modes; conflict detection always uses the same deterministic rules.",
+    "Ollama 未連線時，ollama 欄位為空並標記 skipped.",
+    "This comparison is for demonstration, not a formal benchmark."
+  ]
+}

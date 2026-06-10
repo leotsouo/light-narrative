@@ -8,6 +8,7 @@ from src.narrative_patterns import (
     ACTIVE_SUBJECT_RE,
     DEAD_SUBJECT_RE,
     LIMITATION_KEYWORDS,
+    extract_object_names_from_text,
     filter_person_names,
     is_likely_world_rule,
     is_valid_person_name,
@@ -89,7 +90,7 @@ def extract_entities_heuristic(chunk: Chunk) -> ExtractionResult:
         if len(n) >= 2
     ]
 
-    obj_hits = set(re.findall(r"([\u4e00-\u9fff]{1,6}(?:鑰匙|劍|刀|書|信|藥|符|玉佩|鐘))", text))
+    obj_names = extract_object_names_from_text(text)
     objects = [
         StoryObject(
             project_id=project_id,
@@ -97,7 +98,7 @@ def extract_entities_heuristic(chunk: Chunk) -> ExtractionResult:
             source_chunk_id=chunk.id,
             evidence=text[:120],
         )
-        for n in obj_hits
+        for n in obj_names
     ]
 
     rules: list[WorldRule] = []

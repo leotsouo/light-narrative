@@ -65,36 +65,51 @@ def _event_label(ev: Event) -> str:
     return "".join(parts)
 
 
+def _graph_fallback_html(g: nx.MultiDiGraph, message: str) -> str:
+    stats = graph_stats(g)
+    rows = "".join(f"<li>{k}: {v}</li>" for k, v in stats.items())
+    return (
+        "<div style='font-family:sans-serif;padding:1rem;line-height:1.6'>"
+        f"<p><strong>{message}</strong></p>"
+        f"<p>圖形統計仍可使用：</p><ul>{rows}</ul>"
+        "<p>節點與關係資料已建立，僅互動視覺化暫不可用。</p>"
+        "</div>"
+    )
+
+
 def graph_to_pyvis_html(g: nx.MultiDiGraph, height: str = "500px") -> str:
     try:
         from pyvis.network import Network
     except ImportError:
-        return "<p>請安裝 pyvis</p>"
+        return _graph_fallback_html(g, "未安裝 pyvis。請執行：pip install pyvis")
 
-    net = Network(height=height, directed=True, notebook=False)
-    net.barnes_hut()
+    try:
+        net = Network(height=height, directed=True, notebook=False)
+        net.barnes_hut()
 
-    color_map = {
-        "character": "#4e9af1",
-        "location": "#6bcb77",
-        "object": "#ffd93d",
-        "event": "#ff6b6b",
-        "world_rule": "#c77dff",
-    }
+        color_map = {
+            "character": "#4e9af1",
+            "location": "#6bcb77",
+            "object": "#ffd93d",
+            "event": "#ff6b6b",
+            "world_rule": "#c77dff",
+        }
 
-    for nid, data in g.nodes(data=True):
-        ntype = data.get("node_type", "unknown")
-        net.add_node(
-            nid,
-            label=data.get("label", nid),
-            color=color_map.get(ntype, "#aaaaaa"),
-            title=str(data),
-        )
+        for nid, data in g.nodes(data=True):
+            ntype = data.get("node_type", "unknown")
+            net.add_node(
+                nid,
+                label=data.get("label", nid),
+                color=color_map.get(ntype, "#aaaaaa"),
+                title=str(data),
+            )
 
-    for u, v, data in g.edges(data=True):
-        net.add_edge(u, v, title=data.get("relation", ""))
+        for u, v, data in g.edges(data=True):
+            net.add_edge(u, v, title=data.get("relation", ""))
 
-    return net.generate_html()
+        return net.generate_html()
+    except Exception as exc:  # noqa: BLE001 — 展示時避免整頁崩潰
+        return _graph_fallback_html(g, f"知識圖渲染失敗：{exc}")
 
 
 def graph_stats(g: nx.MultiDiGraph) -> dict[str, int]:

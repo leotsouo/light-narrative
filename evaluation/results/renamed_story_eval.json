@@ -1,0 +1,69 @@
+{
+  "sample_name": "renamed_story",
+  "report_path": "data\\exports\\report_sample_renamed_conflict_story.json",
+  "ground_truth_path": "evaluation\\ground_truth\\renamed_story_gt.json",
+  "total_expected": 5,
+  "total_predicted": 7,
+  "tp": 5,
+  "fp": 2,
+  "fn": 0,
+  "precision": 0.714,
+  "recall": 1.0,
+  "f1": 0.833,
+  "duplicate_count": 0,
+  "duplicate_rate": 0.0,
+  "evidence_accuracy": 1.0,
+  "matched_conflicts": [
+    {
+      "ground_truth_id": "gt_r002",
+      "system_conflict_id": "da8e2b62-76a8-4d9f-980d-c8b3299bdcbd",
+      "conflict_type": "unique_item_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_r003",
+      "system_conflict_id": "36e7ad1f-1273-4317-b663-49a796a6abfd",
+      "conflict_type": "world_rule_violation",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_r004",
+      "system_conflict_id": "349da5d7-661f-481a-9461-a127520bb0be",
+      "conflict_type": "world_setting_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_r005",
+      "system_conflict_id": "f110c944-a3e0-42b4-88c6-859f6dae3017",
+      "conflict_type": "world_rule_violation",
+      "match_reason": "conflict_type matched and entity overlap and 4 keyword(s) matched",
+      "evidence_ok": true
+    },
+    {
+      "ground_truth_id": "gt_r001",
+      "system_conflict_id": "ddfff5d3-e6a5-4875-b92d-8879a7b39265",
+      "conflict_type": "character_state_conflict",
+      "match_reason": "conflict_type matched and entity overlap and 3 keyword(s) matched",
+      "evidence_ok": true
+    }
+  ],
+  "missed_conflicts": [],
+  "false_positives": [
+    {
+      "system_conflict_id": "d4fbe5ed-70b5-45f4-ad2f-bc119774e304",
+      "title": "物品「青銅印」持有人不一致",
+      "conflict_type": "item_location_conflict"
+    },
+    {
+      "system_conflict_id": "c63efb46-a471-4a74-98c9-14011dc9fc17",
+      "title": "角色「韓逐」能力或性格表現出現漂移",
+      "conflict_type": "character_consistency_drift"
+    }
+  ],
+  "notes": [
+    "This is a simplified evaluation for final project reporting, not a formal benchmark."
+  ]
+}
